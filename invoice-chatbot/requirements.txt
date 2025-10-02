@@ -7,3 +7,7 @@ pydantic
 pypdf
 chromadb
 sentence-transformers
+langchain_community
+langchain-openai
+langchain-huggingface
+python-multipart
