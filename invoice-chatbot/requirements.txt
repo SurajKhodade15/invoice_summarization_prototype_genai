@@ -1,6 +1,7 @@
 fastapi
 uvicorn
 langchain
+langsmith
 openai
 python-dotenv
 pydantic

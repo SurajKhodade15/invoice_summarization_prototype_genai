@@ -1,6 +1,6 @@
 import os
 import logging
-import langsmith
+from langchain.callbacks.tracers.langchain import LangChainTracer
 from dotenv import load_dotenv
 LOG_DIR = "./logs"
 os.makedirs(LOG_DIR, exist_ok=True)
@@ -32,8 +32,10 @@ class InvoiceQASystem:
         # Initialize LLM
         # LangSmith observability
         langsmith_project = "Invoice_Summarization"
+        os.environ["LANGCHAIN_TRACING_V2"] = "true"
         os.environ["LANGCHAIN_PROJECT"] = langsmith_project
-        logger.info(f"LangSmith project set: {langsmith_project}")
+        logger.info(f"LangSmith tracing enabled for project: {langsmith_project}")
+        self.tracer = LangChainTracer()
 
         self.llm = ChatOpenAI(
             model_name="gpt-3.5-turbo",
@@ -108,7 +110,8 @@ ANSWER:
             chain_type="stuff",
             retriever=retriever,
             return_source_documents=True,
-            chain_type_kwargs={"prompt": prompt}
+            chain_type_kwargs={"prompt": prompt},
+            callbacks=[self.tracer]
         )
 
         logger.info(f"Received query: {query}")
